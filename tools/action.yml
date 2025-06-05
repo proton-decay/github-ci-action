@@ -1,0 +1,15 @@
+name: 'CI tools'
+description: 'Container providing useful CI tools'
+
+inputs:
+  command:
+    description: 'Command to execute'
+    required: true
+
+runs:
+  using: 'docker'
+  image: 'wojciechkluczka/rust-ci:0.1.0'
+  args:
+    - bash
+    - -c
+    - ${ inputs.command }

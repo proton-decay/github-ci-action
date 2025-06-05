@@ -1,6 +1,9 @@
 name: 'Quick check'
 description: 'Check and lint'
 
+env:
+  CARGO_TERM_COLOR: always
+
 inputs:
   git-credencials:
     description: 'Git credencials'
@@ -28,28 +31,16 @@ runs:
           install -D "ci-cargo-config.toml" "$HOME/.cargo/config.toml"
         fi
 
-    # TODO: Use a well-defined version
-    - name: Update local toolchain
-      shell: bash
-      run: |
-        rustup update
-        sudo apt-get update
-
-    - name: Install buf
-      shell: bash
-      run: |
-        curl -sSL "https://github.com/bufbuild/buf/releases/download/v1.38.0/buf-$(uname -s)-$(uname -m)" -o "/usr/local/bin/buf"
-        chmod +x "/usr/local/bin/buf"
-
     - name: Format
-      shell: bash
       env:
         BUF_TOKEN: "${{ inputs.BUF_TOKEN }}"
-      run: cargo fmt --check 
+      uses: proton-decay/github-ci-action/tools@main 
+      with:
+        command: cargo fmt --check
 
     - name: Clippy
-      shell: bash
       env:
         BUF_TOKEN: "${{ inputs.BUF_TOKEN }}"
-      run: |
-        cargo clippy -- -D warnings 
+      uses: proton-decay/github-ci-action/tools@main 
+      with:
+        command: cargo clippy -- -D warnings 
